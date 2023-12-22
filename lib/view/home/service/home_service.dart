@@ -7,27 +7,11 @@ abstract class IHomeService {
   INetworkManager networkManager;
   IHomeService(this.networkManager);
 
-  Future<List<HomeModel>> fetchHomeItems();
 }
 
 class HomeService extends IHomeService with NetworkHelper {
   HomeService(INetworkManager networkManager) : super(networkManager);
   final box = GetStorage();
 
-  @override
-  Future<List<HomeModel>> fetchHomeItems() async {
-    final response = await networkManager.send<HomeModel, List<HomeModel>>(
-      'https://jsonplaceholder.typicode.com/posts',
-      
-      //  queryParameters:
-      //     Map.fromEntries([MapEntry('personelGuid', personelGuid)]),
-      parseModel: HomeModel(),
-      method: RequestType.GET,
-      // options: Options(// jwt can be written like in core/const/enums/get_s
-      //   headers: {'Authorization':'Bearer '+ box.read('jwt') }
-      // )
-    );
-
-    return response.data ?? [];
-  }
+  
 }

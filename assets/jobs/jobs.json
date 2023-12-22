@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "locationfrom": "location alınan",
+      "locationto": "location bırakılan",
+      "title": "İşin Adı",
+      "description": "8 kişi yolcu",
+      "jobDayRange": 0,
+      "price": 1200,
+      "jobStartDate": "2023-12-22 22:17:17.303413",
+      "jobStartHour": "22:22",
+      "jobFinishHour": "23:17",
+      "isDone": 1
+    },
+    {
+      "id": 2,
+      "locationfrom": "location alınan",
+      "locationto": "location bırakılan",
+      "title": "İşin Adı",
+      "description": "10 kişi yolcu",
+      "jobDayRange": 2,
+      "price": 2200,
+      "jobStartDate": "2023-12-25 22:17:17.303413",
+      "jobStartHour": "",
+      "jobFinishHour": "",
+      "isDone": 0
+    }
+  ]
+}

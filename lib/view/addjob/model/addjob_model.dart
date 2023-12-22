@@ -1,11 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:vexana/vexana.dart';
 
-part 'home_model.g.dart';
+part 'addjob_model.g.dart';
 
 @JsonSerializable()
-class HomeModel{
-int? id;
+class AddjobModel {
+  int? id;
   String? locationfrom;
   String? locationto;
   String? jobtype;
@@ -17,7 +17,7 @@ int? id;
   String? jobStartHour;
   String? jobFinishHour;
 
-  HomeModel(
+  AddjobModel(
       {this.id,
       this.locationfrom,
       this.locationto,
@@ -29,7 +29,7 @@ int? id;
       this.jobStartDate,
       this.jobStartHour,
       this.jobFinishHour});
-    factory HomeModel.fromJson(Map<String, dynamic> json) =>
-      _$HomeModelFromJson(json);
-  Map<String, dynamic> toJson() => _$HomeModelToJson(this);
+  factory AddjobModel.fromJson(Map<String, dynamic> json) =>
+      _$AddjobModelFromJson(json);
+  Map<String, dynamic> toJson() => _$AddjobModelToJson(this);
 }

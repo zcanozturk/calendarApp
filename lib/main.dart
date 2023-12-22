@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template_simple/core/lang/app_translations.dart';
-import 'package:flutter_template_simple/view/login/view/login_view.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -14,26 +13,25 @@ main() async {
 }
 
 class GetTemplateApp extends StatelessWidget {
-  const GetTemplateApp({ Key? key }) : super(key: key);
+  const GetTemplateApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      translationsKeys: AppTranslation.translationKeys ,
-      locale: Locale('tr','Tr'),
+      translationsKeys: AppTranslation.translationKeys,
+      locale: Locale('tr', 'Tr'),
       fallbackLocale: Get.deviceLocale,
       enableLog: true,
       navigatorKey: Get.key,
       navigatorObservers: [GetObserver()],
-      theme:ThemeData(
-          scrollbarTheme: ScrollbarThemeData().copyWith(
-            thumbColor: MaterialStateProperty.all(Colors.blue[500]),
-          ),
-          primarySwatch: Colors.blue,
-        ), 
-      home: LoginView(),
-      
+      theme: ThemeData(
+        scrollbarTheme: ScrollbarThemeData().copyWith(
+          thumbColor: MaterialStateProperty.all(Colors.blue[500]),
+        ),
+        primarySwatch: Colors.blue,
+      ),
+      home: HomeView(),
     );
   }
 }

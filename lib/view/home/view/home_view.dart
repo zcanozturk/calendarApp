@@ -1,56 +1,38 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template_simple/core/components/bottomnav/bottomnavigation.dart';
 import 'package:flutter_template_simple/core/network/vexana_manager.dart';
+import 'package:flutter_template_simple/view/addjob/view/addjob_view.dart';
 import 'package:flutter_template_simple/view/home/model/home_model.dart';
-import 'package:flutter_template_simple/view/home/service/home_service.dart';
-import 'package:flutter_template_simple/view/home/viewmodel/home_view_model.dart';
+
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+
+import '../service/home_service.dart';
+import '../viewmodel/home_view_model.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
   final ctrl = Get.put(
       HomeViewModel(HomeService(VexanaManager.instance.networkManager)));
-  initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // executes after build
-    ctrl.getHomeItems();
-    });
-  }
-  
+
   @override
   Widget build(BuildContext context) {
-    // ctrl.getHomeItems();
-    initState();
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'sun',
-        backgroundColor: Colors.blue,
-        child: Icon(Icons.wb_sunny_outlined),
-        onPressed: () {
-          Get.to(HomeView());
-          ctrl.increaseCounter();
-          Get.snackbar(
-              'Click Action', 'You have clicked ${ctrl.counter.value} times ',
-              backgroundColor: Colors.green, colorText: Colors.white);
-        },
-      ),
+      bottomNavigationBar: getBottomNavigation(),
       appBar: AppBar(
         elevation: 0.0,
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                ctrl.counter.value = 0;
-                Get.snackbar('DELETED', 'You have cleared counter !',
-                colorText: Colors.white,
-                backgroundColor:Colors.green
-                );
-              },
-              child: Icon(Icons.clear))
-        ],
         centerTitle: true,
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        title: Text('Home'),
+        title: Text('Yapılacak İşler'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Get.to(AddjobView());
+              },
+              icon: Icon(Icons.add))
+        ],
       ),
       body: getObservableBody(context),
     );
@@ -70,11 +52,19 @@ class HomeView extends StatelessWidget {
 
   buildListBuilder() {
     var refreshKey = GlobalKey<RefreshIndicatorState>();
-    return Container( // if there is another thing above or below list yo should make this expanded to fit .
-        color: Colors.black,
+    var now = DateTime(2020, 7);
+
+    // Getting the total number of days of the month
+    var totalDays = ctrl.daysInMonth(now);
+
+    // Stroing all the dates till the last date
+    // since we have found the last date using generate
+    var listOfDates = new List<int>.generate(totalDays, (i) => i + 1);
+    return Container(
+        // if there is another thing above or below list yo should make this expanded to fit .
         alignment: Alignment.center,
         height: Get.height,
-        child: ctrl.homeList.isEmpty
+        child: listOfDates.isEmpty
             ? RefreshIndicator(
                 onRefresh: () async {
                   await ctrl.getHomeItems();
@@ -104,35 +94,91 @@ class HomeView extends StatelessWidget {
                   thickness: Get.width * 0.02,
                   child: ListView.builder(
                       physics: BouncingScrollPhysics(),
-                      itemCount: ctrl.homeList.length,
+                      itemCount: listOfDates.length,
                       itemBuilder: (context, index) {
-                        var model = ctrl.homeList[index];
-                        return getCardListWidget(context, model);
+                        return getCardListWidget(context, index);
                       }),
                 ),
               ));
   }
 
-  Widget getCardListWidget(BuildContext context, HomeModel model) {
-    return Card(
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            onTap: () async {
-              //Get.to(SomeView());
-            },
-            isThreeLine: true,
-            leading: Icon(
-              Icons.wb_sunny,
-              color: Colors.blue,
+  Widget getCardListWidget(BuildContext context, int index) {
+    var now = DateTime(2020, 7);
+
+    // Getting the total number of days of the month
+    var totalDays = ctrl.daysInMonth(now);
+
+    // Stroing all the dates till the last date
+    // since we have found the last date using generate
+    var listOfDates = new List<int>.generate(totalDays, (i) => i + 1);
+    print(listOfDates);
+    return ExpansionTile(
+      children: ctrl.joblist.value.map<Widget>((job) {
+        if (DateTime.parse(job.jobStartDate!).day == listOfDates[index]) {
+          return Container(child: _getBody(job));
+        } else {
+          return SizedBox();
+        }
+        
+      }).toList(),
+      title: AutoSizeText(
+        listOfDates[index].toString() +
+            '/' +
+            DateTime.now().month.toString() +
+            '/' +
+            DateTime.now().year.toString(),
+      ),
+    );
+    // return Column(children: [
+    //   Card(
+    //     child: Column(
+    //       children: <Widget>[
+    //         ListTile(
+    //           onTap: () async {
+    //             //Get.to(SomeView());
+    //           },
+    //           leading: Icon(
+    //             Icons.wb_sunny,
+    //             color: Colors.blue,
+    //           ),
+    //           title: AutoSizeText(
+    //             listOfDates[index].toString() +
+    //                 '/' +
+    //                 DateTime.now().month.toString() +
+    //                 '/' +
+    //                 DateTime.now().year.toString(),
+    //             maxLines: 2,
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    //   Divider(),
+    //   Column(
+    //       children: ctrl.joblist.value
+    //           .map<Widget>((job) => Container(child: _getBody(job)))
+    //           .toList())
+    // ]);
+  }
+
+  _getBody(HomeModel e) {
+    return Padding(
+      padding: EdgeInsets.only(left: Get.width * 0.1),
+      child: Card(
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              onTap: () async {
+                //Get.to(SomeView());
+              },
+              leading: Icon(
+                Icons.wb_sunny,
+                color: Colors.blue,
+              ),
+              title: AutoSizeText(e.title!),
             ),
-            title: AutoSizeText(
-              model.title ?? '',
-              maxLines: 2,
-            ),
-            subtitle: Text(model.body ?? ''),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

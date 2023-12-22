@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_model.dart';
+part of 'addjob_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-HomeModel _$HomeModelFromJson(Map<String, dynamic> json) => HomeModel(
+AddjobModel _$AddjobModelFromJson(Map<String, dynamic> json) => AddjobModel(
       id: json['id'] as int?,
       locationfrom: json['locationfrom'] as String?,
       locationto: json['locationto'] as String?,
@@ -20,7 +20,8 @@ HomeModel _$HomeModelFromJson(Map<String, dynamic> json) => HomeModel(
       jobFinishHour: json['jobFinishHour'] as String?,
     );
 
-Map<String, dynamic> _$HomeModelToJson(HomeModel instance) => <String, dynamic>{
+Map<String, dynamic> _$AddjobModelToJson(AddjobModel instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'locationfrom': instance.locationfrom,
       'locationto': instance.locationto,
