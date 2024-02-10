@@ -19,6 +19,8 @@ class HomeViewModel extends GetxController {
   var homeList = <HomeModel>[].obs;
   var joblist = <HomeModel>[].obs;
   List mylist = [].obs;
+  List jobdays = [].obs;
+
   int daysInMonth(DateTime date) {
     var firstDayThisMonth = new DateTime(date.year, date.month, date.day);
     var firstDayNextMonth = new DateTime(firstDayThisMonth.year,
@@ -39,7 +41,8 @@ class HomeViewModel extends GetxController {
     var data = await json.decode(response);
     mylist = data["data"];
     joblist.value = mylist.map((user) => HomeModel.fromJson(user)).toList();
-
+    jobdays =
+        joblist.value.map((e) => DateTime.parse(e.jobStartDate!).day).toList();
     print(joblist.first.description);
   }
 }

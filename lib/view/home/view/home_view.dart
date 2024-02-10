@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template_simple/core/components/bottomnav/bottomnavigation.dart';
+import 'package:flutter_template_simple/core/components/dialog/get_dialog_description.dart';
 import 'package:flutter_template_simple/core/network/vexana_manager.dart';
 import 'package:flutter_template_simple/view/addjob/view/addjob_view.dart';
 import 'package:flutter_template_simple/view/home/model/home_model.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_template_simple/view/home/model/home_model.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../jobdetail/view/jobdetail_view.dart';
 import '../service/home_service.dart';
 import '../viewmodel/home_view_model.dart';
 
@@ -64,6 +66,7 @@ class HomeView extends StatelessWidget {
         // if there is another thing above or below list yo should make this expanded to fit .
         alignment: Alignment.center,
         height: Get.height,
+        color: Colors.grey,
         child: listOfDates.isEmpty
             ? RefreshIndicator(
                 onRefresh: () async {
@@ -112,21 +115,34 @@ class HomeView extends StatelessWidget {
     // since we have found the last date using generate
     var listOfDates = new List<int>.generate(totalDays, (i) => i + 1);
     print(listOfDates);
-    return ExpansionTile(
-      children: ctrl.joblist.value.map<Widget>((job) {
-        if (DateTime.parse(job.jobStartDate!).day == listOfDates[index]) {
-          return Container(child: _getBody(job));
-        } else {
-          return SizedBox();
-        }
-        
-      }).toList(),
-      title: AutoSizeText(
-        listOfDates[index].toString() +
-            '/' +
-            DateTime.now().month.toString() +
-            '/' +
-            DateTime.now().year.toString(),
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: Get.width * 0.01, vertical: Get.height * 0.005),
+      child: ExpansionTile(
+        subtitle: ctrl.jobdays.contains(listOfDates[index])
+            ? Text('iş var')
+            : Text(''),
+        collapsedBackgroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        childrenPadding: EdgeInsets.only(left: Get.width * 0.1),
+        children: ctrl.joblist.value.map<Widget>((job) {
+          if (DateTime.parse(job.jobStartDate!).day == listOfDates[index]) {
+            return Container(child: _getBody(job));
+          } else {
+            return SizedBox();
+          }
+        }).toList(),
+        title: AutoSizeText(
+          listOfDates[index].toString() +
+              '/' +
+              DateTime.now().month.toString() +
+              '/' +
+              DateTime.now().year.toString(),
+          style: TextStyle(
+              color: ctrl.jobdays.contains(listOfDates[index])
+                  ? Colors.blue
+                  : Colors.black),
+        ),
       ),
     );
     // return Column(children: [
@@ -162,23 +178,22 @@ class HomeView extends StatelessWidget {
   }
 
   _getBody(HomeModel e) {
-    return Padding(
-      padding: EdgeInsets.only(left: Get.width * 0.1),
-      child: Card(
-        child: Column(
-          children: <Widget>[
-            ListTile(
-              onTap: () async {
-                //Get.to(SomeView());
-              },
-              leading: Icon(
-                Icons.wb_sunny,
-                color: Colors.blue,
-              ),
-              title: AutoSizeText(e.title!),
+    return Card(
+      color: const Color.fromARGB(31, 165, 165, 165),
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            onTap: () async {
+              getDialogDescription(e);
+              // Get.to(JobDetailView(job: e));
+            },
+            leading: Icon(
+              Icons.wb_sunny,
+              color: Colors.blue,
             ),
-          ],
-        ),
+            title: AutoSizeText(e.title!),
+          ),
+        ],
       ),
     );
   }

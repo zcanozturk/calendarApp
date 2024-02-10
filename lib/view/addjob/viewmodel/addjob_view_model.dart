@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_template_simple/view/addjob/model/addjob_model.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../service/addjob_service.dart';
 
@@ -74,14 +79,61 @@ class AddjobViewModel extends GetxController {
   String? selectedFinishHour;
   var selectedFHour = '07.00'.obs;
   var descriptionController = TextEditingController();
+  var jobnameController = TextEditingController();
+  var locationfromController = TextEditingController();
+  var locationtoController = TextEditingController();
   var leaveDayController = TextEditingController();
   var jobStartDate = DateTime.now().obs;
-
+  var joblist = <AddjobModel>[].obs;
+  List mylist = [].obs;
   void increaseCounter() => counter++;
 
   void changeLoading() {
     isLoading.value = !isLoading.value;
   }
 
-  Future<void> getCalendarItems() async {}
+  Future<void> getCalendarItems() async {
+    const String localJsonPath = 'assets/jobs/jobs.json';
+    final File file = await _localFile;
+    AddjobModel newJob = AddjobModel(
+      id: 2,
+      locationfrom: "location alınan",
+      locationto: "location bırakılan",
+      title: "İşin Adı",
+      description: "10 kişi yolcu",
+      jobDayRange: 2,
+      price: 2200,
+      jobStartDate: "2023-12-26 22:17:17.303413",
+      jobStartHour: "",
+      jobFinishHour: "",
+    );
+
+    //final String response = await rootBundle.loadString(localJsonPath);
+    String jsonString = await file.readAsString();
+
+    var data = await json.decode(jsonString);
+    mylist = data["data"];
+    joblist.value = mylist.map((user) => AddjobModel.fromJson(user)).toList();
+    joblist.value.add(newJob);
+    String updatedJsonString = json.encode({"data": joblist});
+    await file.writeAsString(updatedJsonString);
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/');
+  }
+
+  Future<File> writeCounter(AddjobModel job) async {
+    final file = await _localFile;
+
+    // Write the file
+    return file.writeAsString('$job');
+  }
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
 }

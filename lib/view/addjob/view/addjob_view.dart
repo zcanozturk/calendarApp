@@ -53,7 +53,9 @@ class AddjobView extends StatelessWidget {
 
   ElevatedButton saveButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        ctrl.getCalendarItems();
+      },
       style: ElevatedButton.styleFrom(
         onPrimary: Colors.white,
         primary: AppColors.APP_BLUE,
